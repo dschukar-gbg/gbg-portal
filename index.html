@@ -583,7 +583,7 @@ const NAME_TO_DEPT = {
 // ═══════════════════════════════════════════════════════════════════
 const PAGE_INFO = {
   home:           {title:'<span>GBG</span> Portal',          sub:'Welcome'},
-  specialists:    {title:'<span>GBG</span> Specialists',     sub:'Library · Specialists'},
+  specialists:    {title:'<span>GBG</span> Specialists',     sub:'Library · All Roles'},
   'role-partners':{title:'<span>GBG</span> Role Partners',   sub:'Library · Role Partners'},
   skills:         {title:'<span>GBG</span> Skills',          sub:'Library · Claude Skills'},
   training:       {title:'<span>GBG</span> Training',        sub:'Resources & Guides'},
@@ -737,7 +737,6 @@ function loadSheet(manual = false) {
       skillsMap       = buildMap(parsed.skills);
       rolePartnersMap = buildMap(parsed.rolePartners);
       projectsMap     = buildMap(parsed.projects);
-      renderStats();
       renderSpecialists();
       renderRolePartners();
       renderSkillsFromSheet();
@@ -756,8 +755,7 @@ function loadSheet(manual = false) {
             rolePartnersMap = buildMap(data.rolePartners || []);
             projectsMap     = buildMap(data.projects    || []);
           }
-          renderStats();
-          renderSpecialists();
+              renderSpecialists();
           renderRolePartners();
           renderSkillsFromSheet();
           const age = Math.round((Date.now() - ts) / 60000);

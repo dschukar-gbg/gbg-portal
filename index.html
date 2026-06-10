@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GBG Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#032340; --navy2:#0A3A5C;
+  --green:#00CC7D; --green2:#00B871; --green-light:#E1F5EE; --green-mid:#9FE1CB;
+  --bg:#F4F6F8; --surface:#FFFFFF; --surface2:#EEF1F4;
+  --border:#D8DDE3; --border2:#B0BAC4;
+  --text:#032340; --text2:#3A5168; --text3:#7A90A3;
+  --amber:#854F0B; --amber-light:#FAEEDA; --amber-mid:#FAC775;
+  --blue:#1A6FA8; --blue-bg:#EAF4FB;
+  --purple:#534AB7; --purple-bg:#EEEDFE;
+  --coral:#993C1D; --coral-bg:#FAECE7;
+  --slate:#5F5E5A; --slate-bg:#F1EFE8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5}
+button,input{font-family:inherit}
+a{color:inherit;text-decoration:none}
+
+/* ── HEADER ── */
+.header{background:var(--navy);color:#fff;border-top:4px solid var(--green);position:sticky;top:0;z-index:200;box-shadow:0 2px 24px rgba(3,35,64,.22)}
+.header-inner{max-width:1160px;margin:0 auto;padding:1.4rem 2rem 1.2rem}
+.header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.1rem;flex-wrap:wrap}
+.logo{cursor:pointer;transition:opacity .15s;display:flex;align-items:center;gap:12px}
+.logo:hover{opacity:.82}
+.logo-mark{width:32px;height:32px;background:var(--green);border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--navy);flex-shrink:0;letter-spacing:-.02em}
+.logo-text h1{font-size:17px;font-weight:700;letter-spacing:-.015em;line-height:1.15}
+.logo-text h1 span{color:var(--green)}
+.logo-text p{font-size:11px;color:rgba(255,255,255,.38);font-family:'DM Mono',monospace;margin-top:1px;letter-spacing:.04em}
+.header-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sync-time{font-size:11px;color:rgba(255,255,255,.3);font-family:'DM Mono',monospace;white-space:nowrap}
+.btn-sync{background:transparent;border:1px solid rgba(0,204,125,.38);color:rgba(0,204,125,.82);font-size:12px;font-weight:500;padding:4px 12px;border-radius:20px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s;white-space:nowrap}
+.btn-sync:hover{background:rgba(0,204,125,.1);color:var(--green);border-color:var(--green)}
+.btn-sync.spinning .si{animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.total-badge{background:rgba(0,204,125,.13);border:1px solid rgba(0,204,125,.32);color:var(--green);font-size:12px;font-family:'DM Mono',monospace;padding:4px 11px;border-radius:20px;white-space:nowrap}
+.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.search-wrap{position:relative;flex:1;min-width:170px;max-width:270px}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);opacity:.35;pointer-events:none}
+.search-input{width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#fff;font-size:13px;padding:7px 10px 7px 32px;border-radius:7px;outline:none;transition:all .15s}
+.search-input:focus{background:rgba(255,255,255,.11);border-color:rgba(0,204,125,.5)}
+.search-input::placeholder{color:rgba(255,255,255,.28)}
+.filter-row{display:flex;flex-direction:column;gap:7px}
+.pills{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.pill{font-size:12px;font-weight:500;padding:5px 13px;border-radius:20px;border:1px solid rgba(255,255,255,.18);background:transparent;color:rgba(255,255,255,.58);cursor:pointer;transition:all .15s;white-space:nowrap}
+.pill:hover{background:rgba(0,204,125,.1);color:#fff;border-color:rgba(0,204,125,.35)}
+.pill.active{background:var(--green);color:var(--navy);border-color:var(--green);font-weight:700}
+.pill.sub{border-style:dashed}
+.pill.sub.active{border-style:solid}
+.pill-divider{width:1px;height:18px;background:rgba(255,255,255,.14);flex-shrink:0}
+.pill-label{font-size:10px;font-family:'DM Mono',monospace;color:rgba(255,255,255,.26);text-transform:uppercase;letter-spacing:.07em;white-space:nowrap}
+
+/* ── NAV DROPDOWN ── */
+.nav-wrap{position:relative}
+.burger{background:none;border:none;cursor:pointer;padding:6px;display:flex;flex-direction:column;gap:5px;border-radius:6px;transition:background .15s;flex-shrink:0}
+.burger:hover{background:rgba(255,255,255,.08)}
+.burger .bar{width:22px;height:2px;background:#fff;border-radius:2px;transition:transform .22s,opacity .22s}
+.nav-dropdown{position:absolute;top:calc(100% + 8px);left:0;background:var(--navy);border:1px solid rgba(0,204,125,.2);border-radius:11px;overflow:hidden;min-width:218px;box-shadow:0 8px 32px rgba(3,35,64,.38);opacity:0;transform:translateY(-6px);pointer-events:none;transition:opacity .18s,transform .18s;z-index:300}
+.nav-dropdown.open{opacity:1;transform:translateY(0);pointer-events:all}
+.nav-section-label{font-size:10px;font-family:'DM Mono',monospace;color:rgba(255,255,255,.26);padding:9px 15px 5px;text-transform:uppercase;letter-spacing:.08em}
+.nav-item{display:flex;align-items:center;gap:9px;padding:10px 15px;color:rgba(255,255,255,.72);font-size:13px;font-weight:500;cursor:pointer;transition:background .12s,color .12s;border:none;background:none;width:100%;text-align:left}
+.nav-item:hover{background:rgba(0,204,125,.08);color:#fff}
+.nav-item.active{color:var(--green)}
+.nav-item .ni{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+.nav-item .nl{flex:1}
+.nav-item .nc{font-size:11px;color:var(--green);opacity:0}
+.nav-item.active .nc{opacity:1}
+.nav-item .na{font-size:10px;color:rgba(255,255,255,.3);transition:transform .18s}
+.nav-item.acc-open .na{transform:rotate(90deg);color:var(--green)}
+.nav-children{max-height:0;overflow:hidden;transition:max-height .22s ease}
+.nav-children.open{max-height:280px}
+.nav-child{display:flex;align-items:center;gap:7px;padding:8px 15px 8px 42px;color:rgba(255,255,255,.48);font-size:12px;cursor:pointer;transition:background .12s,color .12s;border:none;background:none;width:100%;text-align:left}
+.nav-child:hover{background:rgba(0,204,125,.07);color:#fff}
+.nav-child.active{color:var(--green);font-weight:600}
+.nav-child .cd{width:4px;height:4px;border-radius:50%;background:currentColor;flex-shrink:0;opacity:.55}
+.nav-child.active .cd{opacity:1}
+.nav-divider{height:1px;background:rgba(255,255,255,.07)}
+
+/* ── ERROR ── */
+.error-bar{background:#FCEBEB;border:1px solid #F7C1C1;border-radius:8px;padding:.8rem 1.2rem;margin-bottom:1.5rem;font-size:13px;color:#A32D2D;display:none}
+.error-bar.show{display:block}
+
+/* ── MAIN ── */
+.main{max-width:1160px;margin:0 auto;padding:2rem 2rem 4rem}
+
+/* ── STATS BAR ── */
+.stats-bar{display:flex;gap:1px;background:var(--border);border-radius:10px;overflow:hidden;border:1px solid var(--border);margin-bottom:2rem;box-shadow:0 1px 4px rgba(3,35,64,.05)}
+.stat-seg{flex:1;background:var(--surface);padding:.6rem .85rem;display:flex;align-items:center;gap:7px;cursor:pointer;transition:background .12s;min-width:0}
+.stat-seg:hover,.stat-seg.selected{background:var(--green-light)}
+.stat-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.stat-label{font-size:11px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat-num{font-size:12px;font-weight:700;color:var(--text);margin-left:auto;font-family:'DM Mono',monospace;flex-shrink:0}
+
+/* ── LEGEND ── */
+.legend{display:flex;gap:1.25rem;margin-bottom:1.4rem;font-size:12px;color:var(--text2);flex-wrap:wrap;align-items:center}
+.legend-item{display:flex;align-items:center;gap:5px}
+.legend-sw{width:11px;height:11px;border-radius:3px}
+
+/* ── DEPT SECTIONS ── */
+.dept-section{margin-bottom:2.25rem}
+.dept-heading{display:flex;align-items:center;gap:9px;margin-bottom:.85rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.dept-stripe{width:3px;height:21px;border-radius:2px;flex-shrink:0}
+.dept-name{font-size:15px;font-weight:700;color:var(--text)}
+.dept-tag{font-size:11px;font-family:'DM Mono',monospace;padding:2px 8px;border-radius:6px}
+
+/* ── CARD GRID ── */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:8px}
+
+/* ── CARDS ── */
+.spec-card{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px 13px 10px;position:relative;cursor:pointer;transition:border-color .12s,box-shadow .12s,transform .1s;user-select:none}
+.spec-card:hover{border-color:var(--border2);transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,204,125,.09)}
+.spec-card.is-new{background:var(--green-light);border-color:var(--green-mid)}
+.spec-card.is-new:hover{border-color:var(--green)}
+.spec-card.expanded{border-color:var(--green);box-shadow:0 4px 14px rgba(0,204,125,.1)}
+.spec-card.hidden{display:none}
+.card-chevron{position:absolute;top:10px;right:10px;font-size:11px;color:var(--text3);transition:transform .18s,color .18s;line-height:1}
+.spec-card.expanded .card-chevron{transform:rotate(180deg);color:var(--green)}
+.card-name{font-size:12px;font-weight:600;color:var(--text);line-height:1.35;margin-bottom:7px;padding-right:16px}
+.spec-card.is-new .card-name{color:#085041}
+.card-footer{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.badge-claude{background:var(--green);color:var(--navy);font-size:10px;font-weight:700;padding:2px 6px;border-radius:5px;white-space:nowrap}
+.badge-res{background:var(--surface2);color:var(--text2);font-size:10px;font-family:'DM Mono',monospace;padding:2px 6px;border-radius:4px;border:1px solid var(--border)}
+.badge-hrs-high{background:var(--green-light);color:#0F6E56;font-size:10px;font-family:'DM Mono',monospace;padding:2px 6px;border-radius:4px;border:1px solid var(--green-mid)}
+.badge-hrs-med{background:var(--amber-light);color:var(--amber);font-size:10px;font-family:'DM Mono',monospace;padding:2px 6px;border-radius:4px;border:1px solid var(--amber-mid)}
+.badge-hrs-low{background:var(--surface2);color:var(--text2);font-size:10px;font-family:'DM Mono',monospace;padding:2px 6px;border-radius:4px;border:1px solid var(--border)}
+
+/* ── TOOLTIP ── */
+.card-tooltip{display:none;position:absolute;bottom:calc(100% + 7px);left:0;right:0;background:var(--navy);color:rgba(255,255,255,.88);font-size:11px;line-height:1.55;padding:9px 11px;border-radius:7px;z-index:50;pointer-events:none;box-shadow:0 4px 18px rgba(3,35,64,.28);border:1px solid rgba(0,204,125,.18);font-family:'Plus Jakarta Sans',sans-serif}
+.spec-card:hover:not(.expanded) .card-tooltip{display:block}
+
+/* ── DOC PANEL ── */
+.doc-panel{margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.spec-card.is-new .doc-panel{border-top-color:var(--green-mid)}
+.doc-btn{display:flex;align-items:center;justify-content:space-between;gap:5px;padding:5px 8px;border-radius:5px;font-size:11px;font-weight:500;border:1px solid var(--border);background:var(--surface2);color:var(--text2);cursor:pointer;width:100%;text-align:left;margin-bottom:3px;transition:all .1s}
+.doc-btn:last-child{margin-bottom:0}
+.doc-btn:hover{background:var(--green-light);border-color:var(--green-mid);color:#0F6E56}
+.doc-btn.no-link{opacity:.42;cursor:default}
+.doc-btn.no-link:hover{background:var(--surface2);border-color:var(--border);color:var(--text2)}
+.doc-empty{font-size:11px;color:var(--text3);font-style:italic}
+
+/* ── SKELETON ── */
+.skeleton-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:8px;margin-bottom:2.25rem}
+.skeleton-card{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px 13px;height:72px}
+.skel{background:linear-gradient(90deg,var(--border) 25%,var(--surface2) 50%,var(--border) 75%);background-size:200% 100%;animation:shimmer 1.3s infinite;border-radius:4px;height:12px;margin-bottom:7px}
+.skel.short{width:50%;height:10px;margin-bottom:0}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* ── PORTAL HOME ── */
+.portal-intro{margin-bottom:2.5rem}
+.portal-intro h2{font-size:24px;font-weight:700;color:var(--text);letter-spacing:-.02em;margin-bottom:6px}
+.portal-intro h2 span{color:var(--green)}
+.portal-intro p{font-size:14px;color:var(--text2)}
+.portal-group{margin-bottom:2.25rem}
+.portal-group-label{font-size:11px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:.7rem;padding-bottom:.45rem;border-bottom:1px solid var(--border)}
+.portal-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(275px,1fr));gap:9px}
+.portal-card{display:flex;align-items:center;gap:13px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:15px 17px;cursor:pointer;transition:all .13s;text-align:left;width:100%}
+.portal-card:hover{border-color:var(--green-mid);box-shadow:0 4px 14px rgba(0,204,125,.1);transform:translateY(-1px)}
+.portal-icon{font-size:22px;width:42px;height:42px;background:var(--green-light);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.portal-card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.portal-card-desc{font-size:11px;color:var(--text2);line-height:1.45}
+.portal-arrow{font-size:17px;color:var(--text3);flex-shrink:0;transition:all .13s}
+.portal-card:hover .portal-arrow{color:var(--green);transform:translateX(2px)}
+
+/* ── PLACEHOLDER ── */
+.placeholder-page{min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;color:var(--text3)}
+.placeholder-page .pp-icon{font-size:46px;opacity:.22}
+.placeholder-page h2{font-size:20px;font-weight:600;color:var(--text2);opacity:.42}
+.placeholder-page p{font-size:14px;opacity:.36;text-align:center;max-width:300px;line-height:1.6}
+
+/* ── AI RESOURCES ── */
+.resource-card{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:15px 16px;cursor:pointer;transition:all .13s;max-width:380px}
+.resource-card:hover{border-color:var(--green-mid);box-shadow:0 4px 14px rgba(0,204,125,.1);transform:translateY(-1px)}
+.resource-card-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:5px}
+.resource-card-desc{font-size:12px;color:var(--text2);line-height:1.55;margin-bottom:9px}
+.resource-card-link{font-size:12px;color:var(--green);font-weight:500;display:flex;align-items:center;gap:4px}
+
+/* ── PAGE VISIBILITY ── */
+.page{display:none}.page.active{display:block}
+
+@media(max-width:680px){
+  .header-inner{padding:1.2rem 1.25rem}
+  .main{padding:1.5rem 1.25rem 3rem}
+  .stats-bar{flex-wrap:wrap}
+  .stat-seg{min-width:40%}
+  .portal-cards{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="header-top">
+      <div style="display:flex;align-items:center;gap:11px">
+        <!-- Hamburger -->
+        <div class="nav-wrap">
+          <button class="burger" id="burger" onclick="toggleNav()" aria-label="Menu">
+            <span class="bar" id="b1"></span>
+            <span class="bar" id="b2"></span>
+            <span class="bar" id="b3"></span>
+          </button>
+          <div class="nav-dropdown" id="nav-dropdown">
+            <div class="nav-section-label">Navigation</div>
+
+            <button class="nav-item" id="ni-home" onclick="goTo('home')">
+              <span class="ni">🏠</span><span class="nl">Home</span><span class="nc">✓</span>
+            </button>
+
+            <div class="nav-divider"></div>
+
+            <button class="nav-item" id="ni-library" onclick="toggleAccordion('lib')">
+              <span class="ni">📚</span><span class="nl">Library</span><span class="na">›</span>
+            </button>
+            <div class="nav-children" id="lib-children">
+              <button class="nav-child" id="nc-specialists" onclick="goTo('specialists')">
+                <span class="cd"></span>Specialists
+              </button>
+              <button class="nav-child" id="nc-role-partners" onclick="goTo('role-partners')">
+                <span class="cd"></span>Role Partners
+              </button>
+              <button class="nav-child" id="nc-skills" onclick="goTo('skills')">
+                <span class="cd"></span>Skills
+              </button>
+            </div>
+
+            <div class="nav-divider"></div>
+
+            <button class="nav-item" id="ni-training" onclick="goTo('training')">
+              <span class="ni">🎓</span><span class="nl">Training</span><span class="nc">✓</span>
+            </button>
+
+            <div class="nav-divider"></div>
+
+            <button class="nav-item" id="ni-resources" onclick="toggleAccordion('res')">
+              <span class="ni">📁</span><span class="nl">Resources</span><span class="na">›</span>
+            </button>
+            <div class="nav-children" id="res-children">
+              <button class="nav-child" id="nc-ai-resources" onclick="goTo('ai-resources')">
+                <span class="cd"></span>AI Resources
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Logo -->
+        <div class="logo" onclick="goTo('home')">
+          <div class="logo-mark">GB</div>
+          <div class="logo-text">
+            <h1 id="page-title"><span>GBG</span> Portal</h1>
+            <p id="page-subtitle">Welcome</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right side -->
+      <div class="header-right">
+        <span class="sync-time" id="sync-time"></span>
+        <button class="btn-sync" id="sync-btn" onclick="loadSheet(true)" style="display:none">
+          <span class="si">↻</span> Sync sheet
+        </button>
+        <a id="add-specialist-btn" href="https://forms.gle/yeBCrmnNiXPRKtF99" target="_blank" style="display:none;background:var(--green);color:var(--navy);font-size:12px;font-weight:700;padding:4px 13px;border-radius:20px;text-decoration:none;white-space:nowrap;transition:opacity .15s">+ Add Specialist</a>
+        <span class="total-badge" id="total-badge" style="display:none">— specialists</span>
+        <span class="total-badge" id="skills-badge" style="display:none">— skills</span>
+      </div>
+    </div>
+
+    <!-- Search + filter row (specialists) -->
+    <div class="controls" id="spec-controls" style="display:none">
+      <div class="search-wrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input class="search-input" id="spec-search" placeholder="Search specialists…" oninput="doSpecSearch(this.value)">
+      </div>
+      <div class="filter-row">
+        <div class="pills" id="dept-pills">
+          <button class="pill active" id="dp-all" onclick="toggleDept('all',this)">All</button>
+          <button class="pill" id="dp-account" onclick="toggleDept('Account Service',this)">Account Service</button>
+          <button class="pill" id="dp-data" onclick="toggleDept('Data &amp; Strategy',this)">Data &amp; Strategy</button>
+          <button class="pill" id="dp-content" onclick="toggleDept('Content &amp; Creative',this)">Content &amp; Creative</button>
+          <button class="pill" id="dp-tech" onclick="toggleDept('Technology',this)">Technology</button>
+          <button class="pill" id="dp-ops" onclick="toggleDept('Leadership &amp; Ops',this)">Leadership &amp; Ops</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search + filter row (skills) -->
+    <div class="controls" id="skills-controls" style="display:none">
+      <div class="search-wrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input class="search-input" id="skills-search" placeholder="Search skills…" oninput="doSkillsSearch(this.value)">
+      </div>
+      <div class="pills" id="skills-pills">
+        <button class="pill active" id="sp-all" onclick="setSkillsDept('all',this)">All</button>
+        <button class="pill" onclick="setSkillsDept('Account Service',this)">Account Service</button>
+        <button class="pill" onclick="setSkillsDept('Data &amp; Strategy',this)">Data &amp; Strategy</button>
+        <button class="pill" onclick="setSkillsDept('Content &amp; Creative',this)">Content &amp; Creative</button>
+        <button class="pill" onclick="setSkillsDept('Technology',this)">Technology</button>
+        <button class="pill" onclick="setSkillsDept('Leadership &amp; Ops',this)">Leadership &amp; Ops</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ERROR BAR -->
+<div id="error-bar" class="error-bar"></div>
+
+<!-- PAGES -->
+<main class="main">
+
+  <!-- HOME -->
+  <div class="page active" id="page-home">
+    <div class="portal-intro">
+      <h2>Welcome to the <span>GBG Portal</span></h2>
+      <p>Select a section below to get started</p>
+    </div>
+    <div class="portal-group">
+      <div class="portal-group-label">📚 Library</div>
+      <div class="portal-cards">
+        <button class="portal-card" onclick="goTo('specialists')">
+          <div class="portal-icon">👥</div>
+          <div style="flex:1;min-width:0">
+            <div class="portal-card-title">Specialists</div>
+            <div class="portal-card-desc">Browse and access all GBG specialist documents by department</div>
+          </div>
+          <div class="portal-arrow">→</div>
+        </button>
+        <button class="portal-card" onclick="goTo('role-partners')">
+          <div class="portal-icon">🤝</div>
+          <div style="flex:1;min-width:0">
+            <div class="portal-card-title">Role Partners</div>
+            <div class="portal-card-desc">Strategic role partner documentation and resources</div>
+          </div>
+          <div class="portal-arrow">→</div>
+        </button>
+        <button class="portal-card" onclick="goTo('skills')">
+          <div class="portal-icon">⚡</div>
+          <div style="flex:1;min-width:0">
+            <div class="portal-card-title">Skills</div>
+            <div class="portal-card-desc">Claude-native skills available across GBG client work</div>
+          </div>
+          <div class="portal-arrow">→</div>
+        </button>
+      </div>
+    </div>
+    <div class="portal-group">
+      <div class="portal-group-label">📂 Resources</div>
+      <div class="portal-cards">
+        <button class="portal-card" onclick="goTo('training')">
+          <div class="portal-icon">🎓</div>
+          <div style="flex:1;min-width:0">
+            <div class="portal-card-title">Training</div>
+            <div class="portal-card-desc">Training guides and onboarding materials for GBG specialists</div>
+          </div>
+          <div class="portal-arrow">→</div>
+        </button>
+        <button class="portal-card" onclick="goTo('ai-resources')">
+          <div class="portal-icon">🤖</div>
+          <div style="flex:1;min-width:0">
+            <div class="portal-card-title">AI Resources</div>
+            <div class="portal-card-desc">Lead With AI frameworks, specialist guides, and reference documents</div>
+          </div>
+          <div class="portal-arrow">→</div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPECIALISTS -->
+  <div class="page" id="page-specialists">
+    <div class="error-bar" id="spec-error"></div>
+
+
+    <div id="spec-container"></div>
+    <div id="spec-empty" style="display:none;text-align:center;padding:3rem;color:var(--text3)">No specialists match your search.</div>
+  </div>
+
+  <!-- ROLE PARTNERS -->
+  <div class="page" id="page-role-partners">
+    <div class="placeholder-page">
+      <div class="pp-icon">🤝</div><h2>Role Partners</h2>
+      <p>Role Partner documentation and resources will live here.</p>
+    </div>
+  </div>
+
+  <!-- SKILLS -->
+  <div class="page" id="page-skills">
+    <div id="skills-container"></div>
+  </div>
+
+  <!-- TRAINING -->
+  <div class="page" id="page-training">
+    <div class="placeholder-page">
+      <div class="pp-icon">🎓</div><h2>Training</h2>
+      <p>Training resources for GBG specialists will live here.</p>
+    </div>
+  </div>
+
+  <!-- AI RESOURCES -->
+  <div class="page" id="page-ai-resources">
+
+    <div class="dept-heading" style="margin-bottom:.85rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px">
+      <div style="width:3px;height:21px;border-radius:2px;background:#534AB7;flex-shrink:0"></div>
+      <span style="font-size:15px;font-weight:700">AI Resources</span>
+      <span style="font-size:11px;font-family:'DM Mono',monospace;padding:2px 8px;border-radius:6px;background:#EEEDFE;color:#534AB7">1 resource</span>
+    </div>
+    <div class="card-grid" style="margin-bottom:2.5rem">
+      <div class="resource-card" onclick="window.open('https://docs.google.com/document/d/17VWvvA1ngnVLyNG23oxtyLQfVGQrAG6YeH4jBpxw2oY/edit?tab=t.0','_blank')">
+        <div class="resource-card-title">Lead With AI Framework</div>
+        <div class="resource-card-desc">Comprehensive reference for all Lead With AI intellectual property — every framework, tool, and methodology that forms the backbone of the curriculum, coaching, and consulting work.</div>
+        <div class="resource-card-link">Open document <span>↗</span></div>
+      </div>
+    </div>
+
+    <div class="dept-heading" style="margin-bottom:.85rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px">
+      <div style="width:3px;height:21px;border-radius:2px;background:#1A6FA8;flex-shrink:0"></div>
+      <span style="font-size:15px;font-weight:700">Specialist Resources</span>
+      <span style="font-size:11px;font-family:'DM Mono',monospace;padding:2px 8px;border-radius:6px;background:#EAF4FB;color:#1A6FA8">4 resources</span>
+    </div>
+    <div class="card-grid">
+
+      <div class="resource-card" onclick="window.open('https://docs.google.com/document/d/1yC4ofCPlgxTvz_EllORwVydTpdeXn-2aR_Kr_d68AhY/edit?usp=sharing','_blank')">
+        <div class="resource-card-title">Specialist Update Protocol</div>
+        <div class="resource-card-desc">Step-by-step guide for updating an existing specialist with new feedback or requirements — for any team member, whether or not they built the specialist.</div>
+        <div class="resource-card-link">Open document <span>↗</span></div>
+      </div>
+
+      <div class="resource-card" onclick="window.open('https://docs.google.com/document/d/1Uqx2Z3cqvAGBEgZAarcGpspKnbvtCPtMTPnnfv1Raes/edit?usp=drive_link','_blank')">
+        <div class="resource-card-title">GBG Snapshot Deck Training Guide</div>
+        <div class="resource-card-desc">Training and preference guide for building prospect-facing snapshot decks — covers brand system, slide structure, data integrity rules, and Nicole's editorial preferences.</div>
+        <div class="resource-card-link">Open document <span>↗</span></div>
+      </div>
+
+      <div class="resource-card" onclick="window.open('https://docs.google.com/document/d/1FnmYaF75ngsrBffTIEw8xGykOk0OCKbNE461Q0TNTuo/edit?usp=drive_link','_blank')">
+        <div class="resource-card-title">COI Mini Case Studies</div>
+        <div class="resource-card-desc">Writing guidelines for creating mini case studies in an immediately usable format for GBG marketing materials. Saves approximately 2 hours per case study.</div>
+        <div class="resource-card-link">Open document <span>↗</span></div>
+      </div>
+
+      <div class="resource-card" onclick="window.open('https://docs.google.com/document/d/1rW32LmZCCGxQ8RY9SaQ8N87DLa0N6mN0eJjZFofjacw/edit?tab=t.0','_blank')">
+        <div class="resource-card-title">GBG Blog Image Prompt Generator</div>
+        <div class="resource-card-desc">Step-by-step guide for generating Adobe Firefly prompts for branded blog featured images — walks through concept selection, color palette rules, and Firefly-ready prompt formatting.</div>
+        <div class="resource-card-link">Open document <span>↗</span></div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// CONFIG — sheet must be set to "Anyone with the link can view"
+// ═══════════════════════════════════════════════════════════════════
+const SHEET_ID   = "1fCI1LX3t-AHRXdUdzikkI1rVoYwk3EPZFK-pkP39lpY";
+const SHEET_NAME = "Form Responses 5";
+const SHEET_URL  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
+
+// ═══════════════════════════════════════════════════════════════════
+// DEPT CONFIG
+// ═══════════════════════════════════════════════════════════════════
+const DEPT_CONFIG = {
+  "Account Service":    {color:"#1A6FA8", bg:"#EAF4FB", order:0},
+  "Data & Strategy":    {color:"#0F6E56", bg:"#E1F5EE", order:1},
+  "Content & Creative": {color:"#993C1D", bg:"#FAECE7", order:2},
+  "Technology":         {color:"#534AB7", bg:"#EEEDFE", order:3},
+  "Leadership & Ops":   {color:"#5F5E5A", bg:"#F1EFE8", order:4},
+};
+
+const NAME_TO_DEPT = {
+  "Meeting Recap Specialist":"Account Service","Warm Email Campaign Specialist":"Account Service",
+  "Sales Deck Specialist":"Account Service","Sales Recap Automation":"Account Service",
+  "Client Brief - Sales Handoff":"Account Service","COI Mini Case Studies":"Account Service",
+  "GBG Snapshot Deck":"Account Service","GBG Email Voice Guide":"Account Service",
+  "Marketing Intelligence Lead Role Partner":"Data & Strategy","Strategy Specialist Role Partner":"Data & Strategy",
+  "Quarterly Data Recap Insights Specialist":"Data & Strategy","User Journey Path Analyst Specialist":"Data & Strategy",
+  "Financial Prediction Workflow":"Data & Strategy","Financial Strategy & Analysis Specialist":"Data & Strategy",
+  "Dashboard Builder Skill":"Data & Strategy",
+  "Content Review Specialist":"Content & Creative","Social Topic Generator Specialist":"Content & Creative",
+  "Social Platform Tailor":"Content & Creative","Social Strategy Builder Specialist":"Content & Creative",
+  "Persona Builder Specialist":"Content & Creative","SEO Keyword Filtration Specialist":"Content & Creative",
+  "AI Citation Optimization Specialist":"Content & Creative","SME Interview Guide Specialist":"Content & Creative",
+  "Brand-Agnostic Visual Asset Creation Specialist":"Content & Creative","GBG Blog Image Prompt Generator":"Content & Creative",
+  "Technical SEO Audit Specialist":"Technology","Website User Flow and Conversion Rate Optimization Specialist":"Technology",
+  "Website Project Scoping Specialist":"Technology","Website Debugging Specialist":"Technology",
+  "Website Audit Interpreter":"Technology","Website Teardown Skill":"Technology",
+  "Website & Storybrand Strategist Skill":"Technology","Website Research Skill":"Technology",
+  "Website Site Architecture Skill":"Technology","Claude Code Skill Plugin":"Technology",
+  "Client Email Report Skill":"Technology","Email Design Skill":"Technology",
+  "Contract Intelligence & Project Management Specialist":"Leadership & Ops",
+  "Design QC Specialist":"Leadership & Ops","Upward 1:1 Prep Specialist":"Leadership & Ops",
+  "Career Path Mapper for Managers":"Leadership & Ops","Specialist Update Protocol":"Leadership & Ops",
+};
+
+const CLAUDE_ONLY = [
+  {name:"Concise Message Writer",dept:"Account Service",notes:"Writes and tightens workplace messages — emails, Slack, Wrike."},
+  {name:"Competitive Research Deck Creator",dept:"Data & Strategy",notes:"Transforms a competitive research brief into a polished PowerPoint deck."},
+  {name:"Competitive Deck QC",dept:"Data & Strategy",notes:"Quality-checks a competitive deck against its source research doc."},
+  {name:"Weekly Growth Dashboard",dept:"Data & Strategy",notes:"Rolling 8-week GA4/GSC/conversion dashboard. Runs every Monday."},
+  {name:"Client Baseline Snapshot",dept:"Data & Strategy",notes:"Creates the GBG Client Baseline Snapshot for new clients at onboarding."},
+  {name:"Campaign Strategy Brief",dept:"Data & Strategy",notes:"Creates an internal paid media strategy brief from a signed SOW."},
+  {name:"Data: Analyze",dept:"Data & Strategy",notes:"Answers data questions from quick lookups to full analyses."},
+  {name:"Data: Explore Data",dept:"Data & Strategy",notes:"Profiles a dataset's shape, quality, null rates, and anomalies."},
+  {name:"Data: Statistical Analysis",dept:"Data & Strategy",notes:"Descriptive stats, trend analysis, outlier detection, hypothesis testing."},
+  {name:"Data: Validate Data",dept:"Data & Strategy",notes:"QAs an analysis — methodology, accuracy, aggregation logic."},
+  {name:"Data: Build Dashboard",dept:"Data & Strategy",notes:"Builds a self-contained interactive HTML dashboard."},
+  {name:"Data: Data Visualization",dept:"Data & Strategy",notes:"Creates effective charts with Python (matplotlib, seaborn, plotly)."},
+  {name:"Data: Create Viz",dept:"Data & Strategy",notes:"Publication-quality visualizations from a DataFrame or query results."},
+  {name:"DOCX — Word Document",dept:"Technology",notes:"Creates and edits .docx files with headings, page numbers, tracked changes."},
+  {name:"PDF — Create & Manipulate",dept:"Technology",notes:"Reads, merges, splits, fills, watermarks, encrypts, and OCRs PDF files."},
+  {name:"PDF Reading",dept:"Technology",notes:"Extracts content from PDFs using the right strategy for each doc type."},
+  {name:"PPTX — PowerPoint",dept:"Technology",notes:"Creates, parses, edits, and combines PowerPoint decks."},
+  {name:"XLSX — Spreadsheets",dept:"Technology",notes:"Creates and edits .xlsx, .csv, and .tsv files with formulas and charts."},
+  {name:"Frontend Design",dept:"Technology",notes:"Production-grade web components and dashboards with distinctive design."},
+  {name:"Data: Write Query",dept:"Technology",notes:"Optimized SQL with best practices for Snowflake, BigQuery, Postgres."},
+  {name:"Data: SQL Queries",dept:"Technology",notes:"Correct, performant SQL including CTEs, window functions, aggregations."},
+  {name:"Data: Data Context Extractor",dept:"Technology",notes:"Generates company-specific data analysis skills from tribal knowledge."},
+  {name:"GBG Specialist Builder",dept:"Leadership & Ops",notes:"Builds new GBG specialists through a structured interview process."},
+];
+
+// ═══════════════════════════════════════════════════════════════════
+// PAGE METADATA
+// ═══════════════════════════════════════════════════════════════════
+const PAGE_INFO = {
+  home:           {title:'<span>GBG</span> Portal',          sub:'Welcome'},
+  specialists:    {title:'<span>GBG</span> Specialists',     sub:'Library · All Roles'},
+  'role-partners':{title:'<span>GBG</span> Role Partners',   sub:'Library · Role Partners'},
+  skills:         {title:'<span>GBG</span> Skills',          sub:'Library · Claude Skills'},
+  training:       {title:'<span>GBG</span> Training',        sub:'Resources & Guides'},
+  'ai-resources': {title:'<span>GBG</span> AI Resources',    sub:'Resources · AI Frameworks'},
+};
+const LIB_PAGES  = new Set(['specialists','role-partners','skills']);
+const RES_PAGES  = new Set(['ai-resources']);
+
+// ═══════════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════════
+let currentPage   = 'home';
+let navOpen       = false;
+let libOpen       = true;
+let resOpen       = false;
+let deptMap       = {};
+let activeDepts   = new Set();
+let subFilter     = '';
+let specSearch    = '';
+let skillsDept    = 'all';
+let skillsSearch  = '';
+let expandedCards = new Set();
+
+// ═══════════════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════════════
+function getDept(name) {
+  const lo = name.toLowerCase();
+  for (const [k, v] of Object.entries(NAME_TO_DEPT)) {
+    if (lo === k.toLowerCase() || lo.includes(k.toLowerCase()) || k.toLowerCase().includes(lo)) return v;
+  }
+  return 'Account Service';
+}
+
+function cleanName(raw) {
+  return (raw || '').trim()
+    .replace(/\.\w{1,5}$/, '')
+    .replace(/\s*[-–—]\s*(Custom Instructions?|Training (Document|Guide)|Implementation (&\s*Usage\s*)?Guide|Templates?\s*(and|&)\s*Resources?|Complete Training.*|Input Doc|Specialist Prompt|Creation Instructions?).*$/i, '')
+    .replace(/\s+Specialist\s+Implementation\s+Guide\s*$/i, '')
+    .replace(/\s+Implementation\s+Guide\s*$/i, '')
+    .replace(/\s+Input\s+Doc\s*$/i, '')
+    .replace(/_/g, ' ')
+    .replace(/(?<![:\d])\b\d+\b(?![:\d])/g, '')
+    .replace(/CoWork/g, '__CW__')
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/__CW__/g, 'CoWork')
+    .replace(/\s+/g, ' ').trim()
+    .replace(/\s+Specialist$/i, '')
+    .replace(/\s+Skill$/i, '').trim();
+}
+
+function hrsClass(h) {
+  if (!h) return 'low';
+  const n = parseFloat(String(h).match(/[\d.]+/)?.[0] || 0);
+  if (n >= 6) return 'high';
+  if (n >= 2) return 'med';
+  return 'low';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PARSE SHEET DATA
+// ═══════════════════════════════════════════════════════════════════
+function parseGviz(text) {
+  const json = text.replace(/^[\s\S]*?google\.visualization\.Query\.setResponse\(/, '')
+                   .replace(/\);?\s*$/, '');
+  const data = JSON.parse(json);
+  const rows = data.table?.rows || [];
+  return rows.map(row => {
+    const cells = row.c || [];
+    const get = i => (cells[i]?.v != null) ? String(cells[i].v).trim() : '';
+    const name = get(1);
+    if (!name) return null;
+    const docDefs = [
+      {label:'Custom Instructions',  idx:2},
+      {label:'Training Guide',       idx:3},
+      {label:'Implementation Guide', idx:4},
+      {label:'Templates & Resources',idx:5},
+    ];
+    const docs = docDefs.reduce((acc, d) => {
+      const url = get(d.idx);
+      if (url?.startsWith('http')) acc.push({label:d.label, url});
+      return acc;
+    }, []);
+    const hrsRaw = get(6).replace(/hours?/gi,'').replace(/per week/gi,'').trim();
+    return {name, docs, hrs: hrsRaw || null, notes: get(7), isNew: false};
+  }).filter(Boolean);
+}
+
+function buildDeptMap(specialists) {
+  const map = {};
+  Object.keys(DEPT_CONFIG).forEach(d => { map[d] = []; });
+  specialists.forEach(s => {
+    const dept = getDept(s.name);
+    map[dept].push({...s, name: cleanName(s.name)});
+  });
+  return map;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// LOAD SHEET
+// ═══════════════════════════════════════════════════════════════════
+function loadSheet(manual = false) {
+  const errBar  = document.getElementById('spec-error');
+  const syncBtn = document.getElementById('sync-btn');
+  const syncTime= document.getElementById('sync-time');
+
+  errBar.classList.remove('show');
+  errBar.style.display = 'none';
+  syncBtn.classList.add('spinning');
+  if (manual) syncTime.textContent = 'Syncing…';
+  if (!manual) renderSkeleton();
+
+  fetch(SHEET_URL + '&_=' + Date.now())
+    .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+    .then(text => {
+      const specialists = parseGviz(text);
+      deptMap = buildDeptMap(specialists);
+          renderSpecialists();
+      const now = new Date();
+      syncTime.textContent = 'Last sync ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+      localStorage.setItem('gbg_spec_cache', JSON.stringify({v:'4', ts: Date.now(), data: specialists}));
+    })
+    .catch(err => {
+      const cached = localStorage.getItem('gbg_spec_cache');
+      if (cached) {
+        try {
+          const {ts, data} = JSON.parse(cached);
+          deptMap = buildDeptMap(data || []);
+                  renderSpecialists();
+          const age = Math.round((Date.now() - ts) / 60000);
+          syncTime.textContent = 'Cached · ' + age + 'm ago';
+          if (manual) showSpecError('Could not reach sheet — showing cached data (' + age + ' min old). Error: ' + err.message);
+        } catch(e) { fallback(); }
+      } else {
+        fallback();
+        showSpecError('Sync failed: ' + err.message + '. Make sure the sheet is set to "Anyone with the link can view".');
+      }
+    })
+    .finally(() => syncBtn.classList.remove('spinning'));
+}
+
+function fallback() {
+  deptMap = {};
+  Object.keys(DEPT_CONFIG).forEach(d => { deptMap[d] = []; });
+  renderSpecialists();
+}
+
+function showSpecError(msg) {
+  const bar = document.getElementById('spec-error');
+  bar.textContent = msg;
+  bar.style.display = 'block';
+  bar.classList.add('show');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RENDER SKELETON
+// ═══════════════════════════════════════════════════════════════════
+function renderSkeleton() {
+  const container = document.getElementById('spec-container');
+  container.innerHTML = '';
+  for (let d = 0; d < 5; d++) {
+    const sec = document.createElement('div');
+    sec.className = 'dept-section';
+    sec.innerHTML = `<div class="dept-heading"><div class="dept-stripe" style="background:var(--border)"></div>
+      <div class="skel" style="width:130px;height:14px;border-radius:4px"></div></div>
+      <div class="skeleton-grid">${Array(5).fill('<div class="skeleton-card"><div class="skel"></div><div class="skel short"></div></div>').join('')}</div>`;
+    container.appendChild(sec);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RENDER SPECIALISTS
+// ═══════════════════════════════════════════════════════════════════
+function renderSpecialists() {
+  const container = document.getElementById('spec-container');
+  container.innerHTML = '';
+  const depts = Object.keys(DEPT_CONFIG).sort((a,b) => DEPT_CONFIG[a].order - DEPT_CONFIG[b].order);
+
+  depts.forEach(dName => {
+    const items = deptMap[dName] || [];
+    const cfg = DEPT_CONFIG[dName];
+    const section = document.createElement('div');
+    section.className = 'dept-section';
+    section.dataset.dept = dName;
+
+    const heading = document.createElement('div');
+    heading.className = 'dept-heading';
+    heading.innerHTML = `<div class="dept-stripe" style="background:${cfg.color}"></div>
+      <span class="dept-name">${dName}</span>
+      <span class="dept-tag" style="background:${cfg.bg};color:${cfg.color}" id="dtag-${dName.replace(/\W/g,'')}">
+        ${items.length} specialist${items.length!==1?'s':''}
+      </span>`;
+
+    const grid = document.createElement('div');
+    grid.className = 'card-grid';
+
+    items.forEach(s => makeCard(s, grid));
+
+    section.appendChild(heading);
+    section.appendChild(grid);
+    container.appendChild(section);
+  });
+
+  updateSpecDisplay();
+}
+
+function makeCard(s, grid) {
+  const card = document.createElement('div');
+  card.className = 'spec-card' + (s.isNew ? ' is-new' : '');
+  card.dataset.name = (s.name + ' ' + (s.notes||'')).toLowerCase();
+  card.dataset.dept = s.dept || getDept(s.name);
+  card.dataset.haslink = s.docs?.length ? '1' : '0';
+  card.dataset.isnew = s.isNew ? '1' : '0';
+  card.dataset.cardname = s.name;
+
+  const hc = hrsClass(s.hrs);
+  const open = expandedCards.has(s.name);
+  if (open) card.classList.add('expanded');
+
+  card.innerHTML = `
+    <span class="card-chevron">▾</span>
+    <div class="card-name">${cleanName(s.name)}</div>
+    <div class="card-footer">
+      ${s.isNew ? '<span class="badge-claude">Claude Only</span>' : ''}
+      ${s.docs?.length ? `<span class="badge-res">${s.docs.length} resource${s.docs.length!==1?'s':''}</span>` : ''}
+      ${s.hrs ? `<span class="badge-hrs-${hc}">${s.hrs} hrs/wk</span>` : ''}
+    </div>
+    ${s.notes ? `<div class="card-tooltip">${s.notes.substring(0,190)}${s.notes.length>190?'…':''}</div>` : ''}
+    <div class="doc-panel" style="display:${open?'block':'none'}">
+      ${s.docs?.length
+        ? s.docs.map(d => `<button class="doc-btn" onclick="event.stopPropagation();window.open('${d.url}','_blank')">
+            <span>${d.label}</span><span>↗</span></button>`).join('')
+        : `<span class="doc-empty">${s.isNew ? 'Claude skill — no external doc' : 'No resources linked yet'}</span>`}
+    </div>`;
+
+  card.addEventListener('click', e => {
+    if (e.target.closest('.doc-btn')) return;
+    const wasOpen = card.classList.contains('expanded');
+    // Close siblings
+    grid.querySelectorAll('.spec-card.expanded').forEach(c => {
+      if (c !== card) {
+        c.classList.remove('expanded');
+        c.querySelector('.doc-panel').style.display = 'none';
+        expandedCards.delete(c.dataset.cardname);
+      }
+    });
+    card.classList.toggle('expanded', !wasOpen);
+    card.querySelector('.doc-panel').style.display = wasOpen ? 'none' : 'block';
+    if (!wasOpen) expandedCards.add(s.name); else expandedCards.delete(s.name);
+  });
+
+  grid.appendChild(card);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// UPDATE DISPLAY (filter + search)
+// ═══════════════════════════════════════════════════════════════════
+function updateSpecDisplay() {
+  const q = specSearch.toLowerCase();
+  let total = 0;
+
+  document.querySelectorAll('#spec-container .dept-section[data-dept]').forEach(section => {
+    const dName = section.dataset.dept;
+    const tagId = 'dtag-' + dName.replace(/\W/g,'');
+    const deptMatch = activeDepts.size === 0 || activeDepts.has(dName);
+
+    if (!deptMatch) { section.style.display = 'none'; return; }
+    section.style.display = '';
+
+    let dv = 0;
+    section.querySelectorAll('.spec-card').forEach(card => {
+      const nameMatch = !q || card.dataset.name.includes(q);
+      const subMatch  = !subFilter ||
+        (subFilter === 'linked' && card.dataset.haslink === '1') ||
+        (subFilter === 'new'    && card.dataset.isnew  === '1');
+      const show = nameMatch && subMatch;
+      card.classList.toggle('hidden', !show);
+      if (show) dv++;
+    });
+
+    section.style.display = dv === 0 ? 'none' : '';
+    total += dv;
+    const tag = document.getElementById(tagId);
+    if (tag) tag.textContent = dv + ' specialist' + (dv!==1?'s':'');
+  });
+
+  document.getElementById('total-badge').textContent = total + ' specialist' + (total!==1?'s':'');
+  document.getElementById('spec-empty').style.display = total === 0 ? 'block' : 'none';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// SKILLS PAGE
+// ═══════════════════════════════════════════════════════════════════
+function renderSkills() {
+  const container = document.getElementById('skills-container');
+  container.innerHTML = '';
+  const depts = Object.keys(DEPT_CONFIG).sort((a,b) => DEPT_CONFIG[a].order - DEPT_CONFIG[b].order);
+  depts.forEach(dName => {
+    const items = CLAUDE_ONLY.filter(s => s.dept === dName);
+    if (!items.length) return;
+    const cfg = DEPT_CONFIG[dName];
+    const section = document.createElement('div');
+    section.className = 'dept-section';
+    section.dataset.skillDept = dName;
+    section.innerHTML = `<div class="dept-heading">
+      <div class="dept-stripe" style="background:${cfg.color}"></div>
+      <span class="dept-name">${dName}</span>
+      <span class="dept-tag" style="background:${cfg.bg};color:${cfg.color}" id="stag-${dName.replace(/\W/g,'')}">
+        ${items.length} skill${items.length!==1?'s':''}
+      </span>
+    </div>`;
+    const grid = document.createElement('div');
+    grid.className = 'card-grid';
+    items.forEach(s => makeCard({...s, docs:[], isNew:true}, grid));
+    section.appendChild(grid);
+    container.appendChild(section);
+  });
+
+  const total = CLAUDE_ONLY.length;
+  document.getElementById('skills-badge').textContent = total + ' skills';
+  updateSkillsDisplay();
+}
+
+function updateSkillsDisplay() {
+  const q = skillsSearch.toLowerCase();
+  document.querySelectorAll('#skills-container .dept-section[data-skill-dept]').forEach(section => {
+    const dName = section.dataset.skillDept;
+    const tagId = 'stag-' + dName.replace(/\W/g,'');
+    if (skillsDept !== 'all' && skillsDept !== dName) { section.style.display = 'none'; return; }
+    section.style.display = '';
+    let dv = 0;
+    section.querySelectorAll('.spec-card').forEach(card => {
+      const show = !q || card.dataset.name.includes(q);
+      card.classList.toggle('hidden', !show);
+      if (show) dv++;
+    });
+    section.style.display = dv === 0 ? 'none' : '';
+    const tag = document.getElementById(tagId);
+    if (tag) tag.textContent = dv + ' skill' + (dv!==1?'s':'');
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════════════
+function goTo(p) {
+  closeNav();
+  currentPage = p;
+
+  // Swap pages
+  document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
+  const target = document.getElementById('page-' + p);
+  if (target) target.classList.add('active');
+
+  // Update title
+  const info = PAGE_INFO[p] || PAGE_INFO.home;
+  document.getElementById('page-title').innerHTML = info.title;
+  document.getElementById('page-subtitle').textContent = info.sub;
+
+  // Show/hide controls
+  const isSpec  = p === 'specialists';
+  const isSkills = p === 'skills';
+  document.getElementById('sync-btn').style.display           = isSpec ? '' : 'none';
+  document.getElementById('add-specialist-btn').style.display = isSpec ? '' : 'none';
+  document.getElementById('total-badge').style.display        = isSpec ? '' : 'none';
+  document.getElementById('skills-badge').style.display = isSkills ? '' : 'none';
+  document.getElementById('spec-controls').style.display   = isSpec  ? '' : 'none';
+  document.getElementById('skills-controls').style.display = isSkills ? '' : 'none';
+
+  // Nav active states
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-child').forEach(el => el.classList.remove('active'));
+  const ni = document.getElementById('ni-' + p);
+  if (ni) ni.classList.add('active');
+  const nc = document.getElementById('nc-' + p);
+  if (nc) nc.classList.add('active');
+
+  // Keep accordions open for sub-pages
+  if (LIB_PAGES.has(p)) { libOpen = true; updateAccordion('lib'); }
+  if (RES_PAGES.has(p)) { resOpen = true; updateAccordion('res'); }
+}
+
+function toggleNav() {
+  navOpen = !navOpen;
+  const dd = document.getElementById('nav-dropdown');
+  dd.classList.toggle('open', navOpen);
+  // Animate burger
+  const b1 = document.getElementById('b1');
+  const b2 = document.getElementById('b2');
+  const b3 = document.getElementById('b3');
+  if (navOpen) {
+    b1.style.transform = 'translateY(7px) rotate(45deg)';
+    b2.style.opacity = '0'; b2.style.transform = 'scaleX(0)';
+    b3.style.transform = 'translateY(-7px) rotate(-45deg)';
+  } else {
+    b1.style.transform = b2.style.transform = b3.style.transform = '';
+    b2.style.opacity = '';
+  }
+}
+
+function closeNav() {
+  navOpen = false;
+  document.getElementById('nav-dropdown').classList.remove('open');
+  const b1=document.getElementById('b1'),b2=document.getElementById('b2'),b3=document.getElementById('b3');
+  b1.style.transform=b2.style.transform=b3.style.transform='';b2.style.opacity='';
+}
+
+function toggleAccordion(id) {
+  if (id === 'lib') libOpen = !libOpen;
+  else resOpen = !resOpen;
+  updateAccordion(id);
+}
+
+function updateAccordion(id) {
+  const isOpen = id === 'lib' ? libOpen : resOpen;
+  const children = document.getElementById(id + '-children');
+  const btn = document.getElementById('ni-' + (id === 'lib' ? 'library' : 'resources'));
+  if (children) children.classList.toggle('open', isOpen);
+  if (btn) btn.classList.toggle('acc-open', isOpen);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// FILTER HANDLERS
+// ═══════════════════════════════════════════════════════════════════
+function toggleDept(val, btn) {
+  const allPill = document.getElementById('dp-all');
+  if (val === 'all') {
+    activeDepts.clear();
+    document.querySelectorAll('#dept-pills .pill:not(.sub)').forEach(p => p.classList.remove('active'));
+    allPill.classList.add('active');
+    document.querySelectorAll('.stat-seg').forEach(s => s.classList.remove('selected'));
+  } else {
+    allPill.classList.remove('active');
+    if (activeDepts.has(val)) {
+      activeDepts.delete(val);
+      btn.classList.remove('active');
+      if (activeDepts.size === 0) allPill.classList.add('active');
+    } else {
+      activeDepts.add(val);
+      btn.classList.add('active');
+    }
+  }
+  updateSpecDisplay();
+}
+
+function toggleSub(val, btn) {
+  if (subFilter === val) {
+    subFilter = '';
+    btn.classList.remove('active');
+  } else {
+    subFilter = val;
+    document.querySelectorAll('#dept-pills .sub').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  updateSpecDisplay();
+}
+
+function doSpecSearch(val) { specSearch = val; updateSpecDisplay(); }
+
+function setSkillsDept(val, btn) {
+  skillsDept = val;
+  document.querySelectorAll('#skills-pills .pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  updateSkillsDisplay();
+}
+
+function doSkillsSearch(val) { skillsSearch = val; updateSkillsDisplay(); }
+
+// ═══════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════
+
+// Open library accordion by default
+updateAccordion('lib');
+
+// Load cached data immediately if available, then refresh
+(function initCache() {
+  try {
+    const cached = localStorage.getItem('gbg_spec_cache');
+    if (cached) {
+      const {v, data} = JSON.parse(cached);
+      if (v === '4' && data) {
+        deptMap = buildDeptMap(data);
+              renderSpecialists();
+      }
+    }
+  } catch(e) {}
+})();
+
+// Fetch fresh data from sheet
+loadSheet(false);
+
+// Render skills page (static, no fetch needed)
+renderSkills();
+
+// Close nav on outside click
+document.addEventListener('click', e => {
+  if (navOpen && !e.target.closest('.nav-wrap')) closeNav();
+});
+</script>
+</body>
+</html>

@@ -301,6 +301,12 @@ a{color:inherit;text-decoration:none}
                 <span class="cd"></span>AI Resources
               </button>
             </div>
+
+            <div class="nav-divider"></div>
+
+            <button class="nav-item" onclick="signOut()" style="color:rgba(255,100,100,.7)">
+              <span class="ni">🔓</span><span class="nl">Sign Out</span>
+            </button>
           </div>
         </div>
 
@@ -1129,6 +1135,21 @@ function unlockPortal() {
   document.getElementById('login-screen').classList.add('hidden');
   // Make sure we're on the home page after login
   goTo('home');
+}
+
+function signOut() {
+  localStorage.removeItem(AUTH_KEY);
+  sessionStorage.removeItem(AUTH_KEY);
+  closeNav();
+  // Reset login form
+  const input = document.getElementById('login-input');
+  const errMsg = document.getElementById('login-error');
+  const btn = document.getElementById('login-btn');
+  if (input) { input.value = ''; input.type = 'password'; input.classList.remove('error'); }
+  if (errMsg) errMsg.classList.add('hidden');
+  if (btn) { btn.classList.remove('loading'); btn.textContent = 'Sign In'; }
+  document.getElementById('login-eye').textContent = '👁';
+  document.getElementById('login-screen').classList.remove('hidden');
 }
 
 function togglePwShow() {

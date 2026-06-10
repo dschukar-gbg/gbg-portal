@@ -583,7 +583,7 @@ const NAME_TO_DEPT = {
 // ═══════════════════════════════════════════════════════════════════
 const PAGE_INFO = {
   home:           {title:'<span>GBG</span> Portal',          sub:'Welcome'},
-  specialists:    {title:'<span>GBG</span> Specialists',     sub:'Library · All Roles'},
+  specialists:    {title:'<span>GBG</span> Specialists',     sub:'Library · Specialists'},
   'role-partners':{title:'<span>GBG</span> Role Partners',   sub:'Library · Role Partners'},
   skills:         {title:'<span>GBG</span> Skills',          sub:'Library · Claude Skills'},
   training:       {title:'<span>GBG</span> Training',        sub:'Resources & Guides'},
@@ -732,9 +732,15 @@ function loadSheet(manual = false) {
   fetch(SHEET_URL + '&_=' + Date.now())
     .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
     .then(text => {
-      const specialists = parseGviz(text);
-      deptMap = buildDeptMap(specialists);
-          renderSpecialists();
+      const parsed = parseGviz(text);
+      deptMap         = buildMap(parsed.specialists);
+      skillsMap       = buildMap(parsed.skills);
+      rolePartnersMap = buildMap(parsed.rolePartners);
+      projectsMap     = buildMap(parsed.projects);
+      renderStats();
+      renderSpecialists();
+      renderRolePartners();
+      renderSkillsFromSheet();
       const now = new Date();
       syncTime.textContent = 'Last sync ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
       localStorage.setItem('gbg_spec_cache', JSON.stringify({v:'5', ts: Date.now(), data: parsed}));
@@ -743,9 +749,17 @@ function loadSheet(manual = false) {
       const cached = localStorage.getItem('gbg_spec_cache');
       if (cached) {
         try {
-          const {ts, data} = JSON.parse(cached);
-          deptMap = buildDeptMap(data || []);
-                  renderSpecialists();
+          const {v, ts, data} = JSON.parse(cached);
+          if (data) {
+            deptMap         = buildMap(data.specialists || []);
+            skillsMap       = buildMap(data.skills      || []);
+            rolePartnersMap = buildMap(data.rolePartners || []);
+            projectsMap     = buildMap(data.projects    || []);
+          }
+          renderStats();
+          renderSpecialists();
+          renderRolePartners();
+          renderSkillsFromSheet();
           const age = Math.round((Date.now() - ts) / 60000);
           syncTime.textContent = 'Cached · ' + age + 'm ago';
           if (manual) showSpecError('Could not reach sheet — showing cached data (' + age + ' min old). Error: ' + err.message);
@@ -1171,7 +1185,9 @@ updateAccordion('lib');
     if (cached) {
       const {v, data} = JSON.parse(cached);
       if (v === '5' && data) {
-        deptMap = buildDeptMap(data);
+        deptMap = buildMap((data && data.specialists) ? data.specialists : (Array.isArray(data) ? data : []));
+        skillsMap = buildMap((data && data.skills) ? data.skills : []);
+        rolePartnersMap = buildMap((data && data.rolePartners) ? data.rolePartners : []);
               renderSpecialists();
       }
     }

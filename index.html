@@ -709,8 +709,8 @@ function parseGviz(text) {
 
     } else if (type === 'role partner') {
       const docs = [];
-      const rpInst = get(12); // col M
-      const rpImpl = get(13); // col N
+      const rpInst = get(11); // col L
+      const rpImpl = get(12); // col M
       if (rpInst) docs.push({label:'Instructions', url: rpInst});
       if (rpImpl) docs.push({label:'Implementation Guide', url: rpImpl});
       rolePartners.push({name, dept, hrs: hrs||null, notes, docs});
@@ -723,10 +723,10 @@ function parseGviz(text) {
     } else if (type === 'builder' || type === 'builder/wizard') {
       // Builder cols: O(14)=Instructions, P(15)=Training, Q(16)=Implementation, R(17)=Templates
       const docDefs = [
-        {label:'Instructions',         idx:14},
-        {label:'Training Guide',       idx:15},
-        {label:'Implementation Guide', idx:16},
-        {label:'Templates & Resources',idx:17},
+        {label:'Instructions',         idx:13},
+        {label:'Training Guide',       idx:14},
+        {label:'Implementation Guide', idx:15},
+        {label:'Templates & Resources',idx:16},
       ];
       const docs = docDefs.reduce((acc, d) => {
         const url = get(d.idx);
